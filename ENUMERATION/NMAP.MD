@@ -119,4 +119,25 @@ This document serves as a comprehensive guide for using Nmap, providing various 
 18. **Testing Firewall Rule with OS Detection**: `sudo nmap 10.129.2.28 -n -Pn -p 445 -O`
     - Detects the operating system while scanning a specified port.
 
+## Timing Templates
+- `-T 0` / `-T paranoid`: Used for stealthy scans, slowest speed to avoid detection.
+- `-T 1` / `-T sneaky`: Slightly faster than paranoid, still focused on stealth.
+- `-T 2` / `-T polite`: Balances speed and stealth, less impact on network.
+- `-T 3` / `-T normal`: Default timing template, balanced approach.
+- `-T 4` / `-T aggressive`: Faster scans, more load on the network, more likely to be detected.
+- `-T 5` / `-T insane`: Fastest speed, high network load, easily detected.
+
+## Firewall and IDS/IPS Evasion Techniques
+- **Firewall Evasion**: Techniques to bypass firewall rules that may block or alter scanning traffic.
+- **IDS/IPS Evasion**: Techniques specifically designed to evade intrusion detection and prevention systems.
+
+## Specific Scans and Techniques
+- **SYN Scan**: `sudo nmap 10.129.2.28 -p 21,22,25 -sS -Pn -n --disable-arp-ping --packet-trace` - Standard quick scan to check for open ports using SYN packets.
+- **ACK Scan**: `nmap 10.129.2.28 -p 21,22,25 -sA -Pn -n --disable-arp-ping --packet-trace` - Determines whether ports are statefully filtered.
+- **Decoy Scan**: `sudo nmap 10.129.2.28 -p 80 -sS -Pn -n --disable-arp-ping --packet-trace -D RND:5` - Uses decoys to confuse network watchers, making the scan source harder to identify.
+
+## Advanced Network Scanning Techniques
+- **DNS Proxying**: Using DNS servers for DNS resolution of target names, especially useful in internal networks (DMZ).
+- **Source Port Specification**: `sudo nmap 10.129.2.28 -p50000 -sS -Pn -n --disable-arp-ping --packet-trace --source-port 53` - Scans using a specific source port to bypass certain firewall configurations.
+
 

@@ -66,3 +66,62 @@ sudo nmap 10.129.2.0/24 -sn -oA tnet
 sudo nmap -sn -oA tnet -iL hosts.lst
 
 
+# Nmap Scan Techniques
+
+## Detailed Command Descriptions
+
+1. **Scan Network Range**: `sudo nmap 10.129.2.0/24 -sn -oA tnet`
+    - Targets a network range, disables port scanning, and stores the results in all formats starting with the name 'tnet'.
+
+2. **Scan IP List**: `sudo nmap -sn -oA tnet -iL hosts.lst`
+    - Performs defined scans against targets in the provided 'hosts.lst' list.
+
+3. **Scan Multiple IPs**: `sudo nmap -sn -oA tnet 10.129.2.18 10.129.2.19 10.129.2.20`
+    - Allows scanning multiple specified IP addresses.
+
+4. **Scan Single IP**: `sudo nmap 10.129.2.18 -sn -oA host`
+    - Scans a single IP, disables port scanning, and stores the results with the prefix 'host'.
+
+5. **Ping Scan with ICMP Echo Requests**: `sudo nmap 10.129.2.18 -sn -oA host -PE`
+    - Performs a ping scan using ICMP Echo requests.
+
+6. **Determining Host Status with Reason**: `sudo nmap 10.129.2.18 -sn -oA host -PE --reason`
+    - Shows the reason for a host being marked as "alive".
+
+7. **Discovering Open TCP Ports**: `sudo nmap 10.129.2.28 --top-ports=10`
+    - Scans for the top 10 TCP ports.
+
+8. **Trace the Packets**: `sudo nmap 10.129.2.28 -p 21 --packet-trace -Pn -n --disable-arp-ping`
+    - Traces packets sent and received during the scan.
+
+9. **Connect Scan on TCP Port 443**: `nmap 10.129.2.28 -p 443 --packet-trace --disable-arp-ping -Pn -n --reason -sT`
+    - Performs a TCP connect scan on port 443, showing all packets sent and received.
+
+10. **Discovering Open UDP Ports**: `sudo nmap 10.129.2.28 -F -sU`
+    - Performs a UDP scan on the top 100 ports.
+
+11. **Version Scan**: `sudo nmap 10.129.2.28 -Pn -n --disable-arp-ping --packet-trace -p 445 --reason -sV`
+    - Performs a service version detection scan.
+
+12. **Service Enumeration**: `sudo nmap 10.129.2.28 -p- -sV`
+    - Scans all ports for service version detection.
+
+13. **Using Default Scripts**: `sudo nmap <target> -sC`
+    - Executes default NSE scripts against the target.
+
+14. **Specifying Scripts**: `sudo nmap <target> --script <category>`
+    - Runs scripts from a specific category.
+
+15. **Vulnerability Assessment**: `sudo nmap 10.129.2.28 -p 80 -sV --script vuln`
+    - Uses vulnerability scripts to scan the target.
+
+16. **Optimizing Scans with Timing Templates**: `sudo nmap 10.129.2.0/24 -F --initial-rtt-timeout 50ms --max-rtt-timeout 100ms`
+    - Adjusts the timing for scans to optimize performance.
+
+17. **Decoy Scan**: `sudo nmap 10.129.2.28 -p 80 -sS -Pn -n --disable-arp-ping --packet-trace -D RND:5`
+    - Uses decoys to mask the scanner's IP address.
+
+18. **Testing Firewall Rule with OS Detection**: `sudo nmap 10.129.2.28 -n -Pn -p 445 -O`
+    - Detects the operating system while scanning a specified port.
+
+

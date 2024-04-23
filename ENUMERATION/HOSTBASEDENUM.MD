@@ -114,8 +114,9 @@ select * from <table>;
 
 # Search Within a Table:
 select * from <table> where <column> = "<string>";
-# Search for a specific string within a column in the desired table. | 
+# Search for a specific string within a column in the desired table. 
 
+```
 
 ## MSSQL (Port 1433)
 | **Command** | **Description** |

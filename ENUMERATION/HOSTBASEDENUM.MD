@@ -83,6 +83,40 @@
 | `mysql -u <user> -p<password> -h <FQDN/IP>` | Login to the MySQL server. |
 | `sudo nmap <FQDN/IP> -sV -sC -p3306 --script mysql*` | Nmap scan on MySQL port to enumerate service details and vulnerabilities. |
 
+# MySQL Commands Cheat Sheet
+
+This cheat sheet provides a comprehensive list of basic commands for interacting with a MySQL database server. It includes instructions for connecting to the server, viewing databases, and manipulating database contents.
+
+```bash
+# Connect to MySQL Server:
+mysql -u <user> -p<password> -h <IP address>
+# Note: There should not be a space between the '-p' flag and the password.
+
+# Show All Databases:
+show databases;
+# Displays all databases available on the server.
+
+# Select a Database:
+use <database>;
+# Selects one of the existing databases to interact with.
+
+# Show All Tables:
+show tables;
+# Displays all tables within the selected database.
+
+# Show All Columns in a Table:
+show columns from <table>;
+# Shows all columns in the selected table.
+
+# Show All Rows in a Table:
+select * from <table>;
+# Displays all data within the specified table.
+
+# Search Within a Table:
+select * from <table> where <column> = "<string>";
+# Search for a specific string within a column in the desired table.
+
+
 ## MSSQL (Port 1433)
 | **Command** | **Description** |
 |-------------|-----------------|

